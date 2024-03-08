@@ -3,7 +3,7 @@ from random import randint
 
 
 class ICMP:
-    def __init__(self, type, code):
+    def __init__(self, type=0, code=0, checksum=None):
         self.type = type
         self.code = code
         self.identifier = randint(0, 65535)
@@ -11,12 +11,20 @@ class ICMP:
         self.initial_message = struct.pack(
             "!BBHHH", self.type, self.code, 0, self.identifier, self.seq_num
         )
-        self.checksum = self.getChecksum()
+        if checksum is None:
+            self.checksum = self._getChecksum()
+        else:
+            self.checksum = checksum
         self.message = struct.pack(
             "!BBHHH", self.type, self.code, self.checksum, self.identifier, self.seq_num
         )
 
-    def calculate_checksum(self, message):
+    @staticmethod
+    def parse(packet):
+        icmp_type, icmp_code, icmp_checksum = struct.unpack("!BBH", packet[:4])
+        return ICMP(icmp_type, icmp_code, icmp_checksum)
+
+    def _calculate_checksum(self, message):
         countTo = (len(message) // 2) * 2
         sum = 0
         count = 0
@@ -44,11 +52,10 @@ class ICMP:
 
         return answer
 
-    def getChecksum(self):
-        return self.calculate_checksum(self.initial_message)
+    def _getChecksum(self):
+        return self._calculate_checksum(self.initial_message)
 
     def __str__(self) -> str:
-        return str(self.message)
-
-    def send():
-        pass
+        return str(
+            f"ICMP type: {self.type}, ICMP code: {self.code}, ICMP checksum: {self.checksum}"
+        )
