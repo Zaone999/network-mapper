@@ -13,17 +13,12 @@ To use the Network Mapper Tool, follow these steps:
    git clone <repository-url>
    ```
 
-2. **Install dependencies:**
-   ```sh
-   pip install -r requirements.txt
-   ```
-
-3. **Navigate to the directory containing the tool:**
+2. **Navigate to the directory containing the tool:**
    ```sh
    cd <repository-directory>
    ```
 
-4. **Run the tool with the desired options:**
+3. **Run the tool with the desired options:**
    ```sh
    python main.py -dest <destination-ip> [-cidr <cidr-notation>] [-n <number-of-pings>] [-t <ping-speed>]
    ```
