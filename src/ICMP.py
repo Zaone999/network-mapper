@@ -3,11 +3,11 @@ from random import randint
 
 
 class ICMP:
-    def __init__(self, type=0, code=0, checksum=None):
+    def __init__(self, type=8, code=0, seq_num=1, checksum=None):
         self.type = type
         self.code = code
         self.identifier = randint(0, 65535)
-        self.seq_num = 1
+        self.seq_num =  seq_num
         self.initial_message = struct.pack(
             "!BBHHH", self.type, self.code, 0, self.identifier, self.seq_num
         )
@@ -20,7 +20,7 @@ class ICMP:
         )
 
     @staticmethod
-    def parse(packet):
+    def parse_bytes(packet):
         icmp_type, icmp_code, icmp_checksum = struct.unpack("!BBH", packet[:4])
         return ICMP(icmp_type, icmp_code, icmp_checksum)
 

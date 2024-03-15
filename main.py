@@ -1,21 +1,20 @@
-from src.ICMP import ICMP
-import socket
-import struct
+import argparse
+from src.operations import get_hosts, ping
+
+# Create the parser
+parser = argparse.ArgumentParser(description="Send ICMP packets")
+parser.add_argument("-dest", type=str, required=True, help="Destination IP address")
+parser.add_argument("-cidr", type=int, help="CIDR notation")
+parser.add_argument("-n", type=int, help="Number of pings")
+parser.add_argument("-t", type=float, help="speed of pings")
+args = parser.parse_args()
 
 
-socket = socket.socket(socket.AF_INET, socket.SOCK_RAW, socket.IPPROTO_ICMP)
-socket.bind(("0.0.0.0", 0))
-while True:
-    command = input("enter to send")
-    packet = ICMP(8, 0)
-    socket.sendto(packet.message, ("8.8.8.8", 0))
-    data, addr = socket.recvfrom(1024)
-    # Extract the ICMP packet
-    ip_header = struct.unpack("!BBHHHBBH4s4s", data[:20])
-    version_header_length = ip_header[0]
-    header_length = (version_header_length & 15) * 4
-    icmp_part = data[header_length:]
-    # Create icmp packet object using raw bytes from the IP packet recieved
-    reply_ICMP_packet = ICMP.parse(icmp_part)
-    # Print the ICMP packet
-    print(reply_ICMP_packet)
+if __name__ == "__main__":
+    count = 4 if args.n is None else args.n
+    cidr = 32 if args.cidr is None else args.cidr
+    hosts = get_hosts(args.dest, cidr)
+    try:
+        ping(hosts, count, speed=args.t)
+    except KeyboardInterrupt:
+        print("Exiting...")
