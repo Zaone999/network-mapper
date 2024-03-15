@@ -9,7 +9,7 @@ The Network Mapper Tool is a command-line utility for mapping a network by sendi
 To use the Network Mapper Tool, follow these steps:
 
 1. **Clone the repository:**
-   ```sh
+   ```bash
    git clone <repository-url>
    ```
 
